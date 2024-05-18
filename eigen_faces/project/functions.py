@@ -91,6 +91,10 @@ def eigenFaces(num_components,variance,ds):
         # Get the target
         y = olivetti_people.target
    
+   
+   
+
+    
    #split the data 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
     
@@ -103,19 +107,26 @@ def eigenFaces(num_components,variance,ds):
     
     
     # Select the first 10 images from the array
-    first_10_images = X_reconstructed[:16]
+    # Get the first 16 original and reconstructed images
+    first_16_original_images = X[:16]
+    first_16_reconstructed_images = X_reconstructed[:16]
 
-    fig, axes = plt.subplots(4, 4, figsize=(10, 10),
+    # Create a subplot with 8 rows and 4 columns (2 sets of 4x4 images)
+    fig, axes = plt.subplots(8, 4, figsize=(10, 15),
                             subplot_kw={'xticks':[], 'yticks':[]},
                             gridspec_kw=dict(hspace=0.1, wspace=0.1))
 
-    for i, ax in enumerate(axes.flat):
-        # Reshape the image to its original 2D shape
-        image_2D = first_10_images[i].reshape((h, w))
-        image_2D_real = image_2D.real
+    for i in range(16):
+        # Reshape the original and reconstructed images to their original 2D shape
+        original_image_2D = first_16_original_images[i].reshape((h, w))
+        reconstructed_image_2D = first_16_reconstructed_images[i].reshape((h, w))
 
-        # Display the image
-        ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
+        # Display the original image in the top 4 rows and the reconstructed image in the bottom 4 rows
+        axes[i // 4, i % 4].imshow(original_image_2D.real, cmap='gray')
+        axes[i // 4 + 4, i % 4].imshow(reconstructed_image_2D.real, cmap='gray')
+
+# Save the figure
+
     
     file_path = '..\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png'
 
