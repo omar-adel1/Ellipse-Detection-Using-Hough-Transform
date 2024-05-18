@@ -55,7 +55,8 @@ def pca_inverse_transform(X_pca, top_k_eigenvectors, X_mean, X_std):
 
 
 def eigenFaces(num_components,variance,ds):
-
+    # Initialize explained_variance_ratio
+    
     if ds==1:
         lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
         n_samples, h, w = lfw_people.images.shape
@@ -72,6 +73,13 @@ def eigenFaces(num_components,variance,ds):
    
    #split the data 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
+    X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, X_train.shape[1])
+    if num_components == 0:
+        # Calculate the cumulative sum of explained variances
+        explained_variances = np.cumsum(explained_variance_ratio)
+
+        # Find the number of components that explain a certain percentage of the variance
+        num_components = np.argmax(explained_variances >= float(variance)) + 1
     
     # Compute PCA (eigenfaces) on the face dataset 
     X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components)
@@ -91,9 +99,9 @@ def eigenFaces(num_components,variance,ds):
     
     
     # Select the first 10 images from the array
-    first_10_images = X_reconstructed[:16]
+    first_10_images = X_reconstructed[:25]
 
-    fig, axes = plt.subplots(4, 4, figsize=(10, 10),
+    fig, axes = plt.subplots(5, 5, figsize=(10, 10),
                             subplot_kw={'xticks':[], 'yticks':[]},
                             gridspec_kw=dict(hspace=0.1, wspace=0.1))
 
@@ -106,7 +114,9 @@ def eigenFaces(num_components,variance,ds):
         ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
 
     # Save the figure as an image in the same directory
-    plt.savefig('..\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
+    plt.show()
+    plt.savefig('G:\\university\\Senior 1\\Spring\\Image processing\\Project\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\projectgenerated_image.png')
+   
     
    
         
