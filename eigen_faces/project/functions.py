@@ -42,6 +42,7 @@ def pca(X, k,variance):
 
     # Find the smallest k such that the cumulative explained variance ratio is at least v%
     v = np.where(cumulative_explained_variance_ratio >= float(variance))[0][0] + 1
+    print(v)
     
     #Find the smallest k such that the cumulative explained variance ratio is at least variance: 
     # This step finds the smallest number of components that explain at least a variance proportion of the total variance.
