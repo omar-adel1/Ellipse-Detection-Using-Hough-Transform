@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_lfw_people,fetch_olivetti_faces
 import matplotlib.pyplot as plt
 import warnings
+import os
+
 
 # Ignore matplotlib warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
@@ -114,6 +116,14 @@ def eigenFaces(num_components,variance,ds):
 
         # Display the image
         ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
+    
+    file_path = '..\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png'
+
+    # Check if the file exists
+    if os.path.exists(file_path):
+        # If the file exists, delete it
+        os.remove(file_path)
+
 
     # Save the figure as an image in the same directory
     plt.savefig('..\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
