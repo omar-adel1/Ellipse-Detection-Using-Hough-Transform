@@ -26,22 +26,27 @@ def pca(X, k,variance):
     eigenvalues = eigenvalues[idx]
     eigenvectors = eigenvectors[:,idx]
 
-    # # Select the top k eigenvectors
-    # top_k_eigenvectors = eigenvectors[:, :k]
 
-    # #   mapping back to origincal dataset
-    # X_pca = np.dot(X_std, top_k_eigenvectors)
-    # print(X_pca.shape)
 
     # Calculate explained variance ratio
-    explained_variance_ratio = eigenvalues[:k] / np.sum(eigenvalues)
+    explained_variance_ratio = eigenvalues[:k] / np.sum(eigenvalues) 
+    #The explained variance ratio is calculated for each principal component by dividing its eigenvalue by the sum of all eigenvalues.
+    #This ratio represents the proportion of the dataset's variance that lies along the axis of each principal component.
     
     # Calculate the cumulative explained variance ratio
     cumulative_explained_variance_ratio = np.cumsum(explained_variance_ratio)
+    #The cumulative explained variance ratio is the cumulative sum of the explained variance ratios.
+    # It represents the total variance explained by the first n components. For example, cumulative_explained_variance_ratio[i] is the total variance explained by the first i+1 components.
 
-    # Find the smallest k such that the cumulative explained variance ratio is at least 60%
-    k = np.where(cumulative_explained_variance_ratio >= float(variance))[0][0] + 1
-    selected_components = eigenvectors[:, :k]
+    # Find the smallest k such that the cumulative explained variance ratio is at least v%
+    v = np.where(cumulative_explained_variance_ratio >= float(variance))[0][0] + 1
+    
+    #Find the smallest k such that the cumulative explained variance ratio is at least variance: 
+    # This step finds the smallest number of components that explain at least a variance proportion of the total variance.
+    # The np.where function returns the indices where cumulative_explained_variance_ratio >= float(variance) is true, and [0][0] + 1 selects the first such index and adds 1 to it (because indices are 0-based).
+    selected_components = eigenvectors[:, :v]
+    
+    # projection
     X_pca = np.dot(X_std, selected_components)
     top_k_eigenvectors=selected_components
     
