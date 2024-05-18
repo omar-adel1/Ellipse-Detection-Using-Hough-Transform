@@ -108,7 +108,7 @@ def eigenFaces(num_components,variance,ds):
     
     # Select the first 10 images from the array
     # Get the first 16 original and reconstructed images
-    first_16_original_images = X[:16]
+    first_16_original_images = X_train[:16]
     first_16_reconstructed_images = X_reconstructed[:16]
 
     # Create a subplot with 8 rows and 4 columns (2 sets of 4x4 images)
@@ -124,6 +124,8 @@ def eigenFaces(num_components,variance,ds):
         # Display the original image in the top 4 rows and the reconstructed image in the bottom 4 rows
         axes[i // 4, i % 4].imshow(original_image_2D.real, cmap='gray')
         axes[i // 4 + 4, i % 4].imshow(reconstructed_image_2D.real, cmap='gray')
+        
+       
 
 # Save the figure
 
