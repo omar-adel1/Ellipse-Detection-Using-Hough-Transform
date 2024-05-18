@@ -102,15 +102,14 @@ def eigenFaces(num_components,variance,ds):
 
     for i, ax in enumerate(axes.flat):
         # Reshape the image to its original 2D shape
-        # Replace 'height' and 'width' with the actual dimensions of your images
         image_2D = first_10_images[i].reshape((h, w))
         image_2D_real = image_2D.real
 
-
         # Display the image
-        ax.imshow(image_2D_real, cmap='gray')
+        ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
 
-    plt.show()
+    # Save the figure as an image in the same directory
+    plt.savefig('C:\\Users\\moham\\OneDrive\\Desktop\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
     
    
         

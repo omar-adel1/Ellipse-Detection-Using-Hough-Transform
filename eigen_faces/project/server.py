@@ -24,20 +24,18 @@ def upload():
     selectedOption = data['selectedOption']
     ###############################################################################
     ################      LOGIC     ################################
+    
+    
+    
+    
     f.eigenFaces(numComponents,varianceThreshold,selectedOption)
    
    
-   
-   
-   
-   
-   
     ####################################################################################
-    output_path = os.path.join(os.path.dirname(__file__), 'image.png')
-    cv2.imwrite(output_path, output_image)
+    
 
     # Return the processed image file
-    return send_file('image.png', mimetype='image/png')
+    return send_file('generated_image.png', mimetype='image/png')
 
 
 if __name__ == '__main__':
