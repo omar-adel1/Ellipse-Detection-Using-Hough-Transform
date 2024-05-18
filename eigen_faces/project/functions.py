@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
+
 from sklearn.datasets import fetch_lfw_people,fetch_olivetti_faces
 import matplotlib.pyplot as plt
 
@@ -57,7 +58,6 @@ def eigenFaces(num_components,variance,ds):
         n_samples, h, w = lfw_people.images.shape
         X = lfw_people.data
         y = lfw_people.target
-        #target_names = lfw_people.target_names
     else:
         olivetti_people = fetch_olivetti_faces()
         # Get the shape of the images
@@ -66,12 +66,9 @@ def eigenFaces(num_components,variance,ds):
         X = olivetti_people.data
         # Get the target
         y = olivetti_people.target
-        # Get the target names
-        #target_names = np.array(["person_" + str(i) for i in range(40)])
-        # Get the number of classes
    
    #split the data 
-    X_train = train_test_split(X, y, test_size=0.01, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
     
     # Compute PCA (eigenfaces) on the face dataset 
     X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components)
@@ -93,7 +90,7 @@ def eigenFaces(num_components,variance,ds):
     # Select the first 10 images from the array
     first_10_images = X_reconstructed[:16]
 
-    fig, axes = plt.subplots(4, 4, figsize=(10, 4),
+    fig, axes = plt.subplots(4, 4, figsize=(10, 10),
                             subplot_kw={'xticks':[], 'yticks':[]},
                             gridspec_kw=dict(hspace=0.1, wspace=0.1))
 
@@ -106,7 +103,7 @@ def eigenFaces(num_components,variance,ds):
         ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
 
     # Save the figure as an image in the same directory
-    plt.savefig('C:\\Users\\moham\\OneDrive\\Desktop\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
+    plt.savefig('..\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
     
    
         
