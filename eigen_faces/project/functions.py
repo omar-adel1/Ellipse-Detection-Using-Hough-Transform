@@ -3,7 +3,10 @@ from sklearn.model_selection import train_test_split
 
 from sklearn.datasets import fetch_lfw_people,fetch_olivetti_faces
 import matplotlib.pyplot as plt
+import warnings
 
+# Ignore matplotlib warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 
 def pca(X, k):
     # Standardize the data
@@ -103,7 +106,7 @@ def eigenFaces(num_components,variance,ds):
         ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
 
     # Save the figure as an image in the same directory
-    plt.savefig('..\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
+    plt.savefig('..\\image\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
     
    
         
