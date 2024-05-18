@@ -8,7 +8,7 @@ import warnings
 # Ignore matplotlib warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 
-def pca(X, k):
+def pca(X, k,variance):
     # Standardize the data
     X_mean = np.mean(X, axis=0)
     X_std = np.std(X, axis=0)
@@ -26,17 +26,31 @@ def pca(X, k):
     eigenvalues = eigenvalues[idx]
     eigenvectors = eigenvectors[:,idx]
 
-    # Select the top k eigenvectors
-    top_k_eigenvectors = eigenvectors[:, :k]
+    # # Select the top k eigenvectors
+    # top_k_eigenvectors = eigenvectors[:, :k]
 
-    #   mapping back to origincal dataset
-    X_pca = np.dot(X_std, top_k_eigenvectors)
-    print(X_pca.shape)
+    # #   mapping back to origincal dataset
+    # X_pca = np.dot(X_std, top_k_eigenvectors)
+    # print(X_pca.shape)
 
     # Calculate explained variance ratio
     explained_variance_ratio = eigenvalues[:k] / np.sum(eigenvalues)
+    
+    # Calculate the cumulative explained variance ratio
+    cumulative_explained_variance_ratio = np.cumsum(explained_variance_ratio)
 
-    return X_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std
+    # Find the smallest k such that the cumulative explained variance ratio is at least 60%
+    k = np.where(cumulative_explained_variance_ratio >= float(variance))[0][0] + 1
+    selected_components = eigenvectors[:, :k]
+    X_pca = np.dot(X_std, selected_components)
+    top_k_eigenvectors=selected_components
+    
+
+    
+
+    
+
+    return X_pca, top_k_eigenvectors, X_mean, X_std
 
 
 
@@ -74,17 +88,12 @@ def eigenFaces(num_components,variance,ds):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
     
     # Compute PCA (eigenfaces) on the face dataset 
-    X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components)
+    X_train_pca, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components,variance)
     #X_test_pca= pca(X_test, num_components)
     
     
     # Calculate the cumulative sum of explained variances
-    explained_variances = np.cumsum(explained_variance_ratio)
     
-    ######TODO WHAT DOES THIS DO##################################
-    # Find the number of components that explain a certain percentage of the variance
-    n_components = [np.argmax(explained_variances >= float(variance)) + 1 ]
-    ################################################################################################
     
     # Select the top k eigenfaces, project the training set onto the eigenfaces, and reconstruct the images
     X_reconstructed = pca_inverse_transform(X_train_pca, top_k_eigenvectors, X_mean, X_std)
