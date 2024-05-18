@@ -1,8 +1,5 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.decomposition import PCA
-from sklearn.svm import SVC
-from sklearn.metrics import classification_report
 from sklearn.datasets import fetch_lfw_people,fetch_olivetti_faces
 import matplotlib.pyplot as plt
 
@@ -60,8 +57,7 @@ def eigenFaces(num_components,variance,ds):
         n_samples, h, w = lfw_people.images.shape
         X = lfw_people.data
         y = lfw_people.target
-        target_names = lfw_people.target_names
-        n_classes = target_names.shape[0]
+        #target_names = lfw_people.target_names
     else:
         olivetti_people = fetch_olivetti_faces()
         # Get the shape of the images
@@ -71,23 +67,24 @@ def eigenFaces(num_components,variance,ds):
         # Get the target
         y = olivetti_people.target
         # Get the target names
-        target_names = np.array(["person_" + str(i) for i in range(40)])
+        #target_names = np.array(["person_" + str(i) for i in range(40)])
         # Get the number of classes
-        n_classes = target_names.shape[0]
    
    #split the data 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+    X_train = train_test_split(X, y, test_size=0.01, random_state=42)
     
     # Compute PCA (eigenfaces) on the face dataset 
     X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components)
-    X_test_pca= pca(X_test, num_components)
+    #X_test_pca= pca(X_test, num_components)
     
     
     # Calculate the cumulative sum of explained variances
     explained_variances = np.cumsum(explained_variance_ratio)
     
+    ######TODO WHAT DOES THIS DO##################################
     # Find the number of components that explain a certain percentage of the variance
     n_components = [np.argmax(explained_variances >= float(variance)) + 1 ]
+    ################################################################################################
     
     # Select the top k eigenfaces, project the training set onto the eigenfaces, and reconstruct the images
     X_reconstructed = pca_inverse_transform(X_train_pca, top_k_eigenvectors, X_mean, X_std)

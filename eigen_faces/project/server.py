@@ -1,7 +1,5 @@
-from flask import Flask, render_template,request, jsonify, send_file
-import io
-import cv2
-import os
+from flask import Flask, render_template,request, send_file
+
 import functions as f
 
 app = Flask(__name__)
