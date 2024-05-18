@@ -94,11 +94,7 @@ def eigenFaces(num_components,variance,ds):
     
     # Compute PCA (eigenfaces) on the face dataset 
     X_train_pca, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components,variance)
-    #X_test_pca= pca(X_test, num_components)
-    
-    
-    # Calculate the cumulative sum of explained variances
-    
+  
     
     # Select the top k eigenfaces, project the training set onto the eigenfaces, and reconstruct the images
     X_reconstructed = pca_inverse_transform(X_train_pca, top_k_eigenvectors, X_mean, X_std)
