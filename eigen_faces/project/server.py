@@ -19,11 +19,12 @@ def home():
 def upload():
     #############getting data from ui
     data = request.get_json() 
-    numComponents=data['numComponents']
+    numComponents=int(data['numComponents'])
     varianceThreshold=data['varianceThreshold']
     selectedOption = data['selectedOption']
     ###############################################################################
     ################      LOGIC     ################################
+    f.eigenFaces(numComponents,varianceThreshold,selectedOption)
    
    
    

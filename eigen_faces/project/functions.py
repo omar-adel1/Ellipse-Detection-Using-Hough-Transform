@@ -41,19 +41,12 @@ def pca(X, k):
 
 
 
-def pca_transform(X, top_k_eigenvectors):
-    # Standardize the data
-    X_std = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
-
-    # Project the data onto the new feature space
-    X_pca = np.dot(X_std, top_k_eigenvectors)
-    print(X_pca.shape)
-
-    return X_pca
-
 def pca_inverse_transform(X_pca, top_k_eigenvectors, X_mean, X_std):
-    # Reconstruct the original data
-    X_reconstructed = np.dot(X_pca, top_k_eigenvectors.T) * X_std + X_mean
+    # Map back to the original space
+    X_std_reconstructed = np.dot(X_pca, top_k_eigenvectors.T)
+
+    # Unstandardize the data
+    X_reconstructed = X_std_reconstructed * X_std + X_mean
 
     return X_reconstructed
 
@@ -93,13 +86,33 @@ def eigenFaces(num_components,variance,ds):
     # Calculate the cumulative sum of explained variances
     explained_variances = np.cumsum(explained_variance_ratio)
     
-    n_components = [np.argmax(explained_variances >= variance) + 1 ]
+    # Find the number of components that explain a certain percentage of the variance
+    n_components = [np.argmax(explained_variances >= float(variance)) + 1 ]
     
-    images_reconstructed = []
-    for n in n_components:
-        X_train_pca = pca_transform(X_train, top_k_eigenvectors[:, :n])
-        X_reconstructed = pca_inverse_transform(X_train_pca, top_k_eigenvectors[:, :n], X_mean, X_std)
-        images_reconstructed.append(X_reconstructed)
+    # Select the top k eigenfaces, project the training set onto the eigenfaces, and reconstruct the images
+    X_reconstructed = pca_inverse_transform(X_train_pca, top_k_eigenvectors, X_mean, X_std)
+    
+    
+    # Select the first 10 images from the array
+    first_10_images = X_reconstructed[:16]
+
+    fig, axes = plt.subplots(4, 4, figsize=(10, 4),
+                            subplot_kw={'xticks':[], 'yticks':[]},
+                            gridspec_kw=dict(hspace=0.1, wspace=0.1))
+
+    for i, ax in enumerate(axes.flat):
+        # Reshape the image to its original 2D shape
+        # Replace 'height' and 'width' with the actual dimensions of your images
+        image_2D = first_10_images[i].reshape((h, w))
+        image_2D_real = image_2D.real
+
+
+        # Display the image
+        ax.imshow(image_2D_real, cmap='gray')
+
+    plt.show()
+    
+   
         
         
     
