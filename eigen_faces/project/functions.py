@@ -4,11 +4,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_lfw_people,fetch_olivetti_faces
 import matplotlib.pyplot as plt
 import warnings
+import os
+
 
 # Ignore matplotlib warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 
-def pca(X, k):
+def pca(X, k,variance):
     # Standardize the data
     X_mean = np.mean(X, axis=0)
     X_std = np.std(X, axis=0)
@@ -26,17 +28,36 @@ def pca(X, k):
     eigenvalues = eigenvalues[idx]
     eigenvectors = eigenvectors[:,idx]
 
-    # Select the top k eigenvectors
-    top_k_eigenvectors = eigenvectors[:, :k]
 
-    #   mapping back to origincal dataset
-    X_pca = np.dot(X_std, top_k_eigenvectors)
-    print(X_pca.shape)
 
     # Calculate explained variance ratio
-    explained_variance_ratio = eigenvalues[:k] / np.sum(eigenvalues)
+    explained_variance_ratio = eigenvalues[:k] / np.sum(eigenvalues) 
+    #The explained variance ratio is calculated for each principal component by dividing its eigenvalue by the sum of all eigenvalues.
+    #This ratio represents the proportion of the dataset's variance that lies along the axis of each principal component.
+    
+    # Calculate the cumulative explained variance ratio
+    cumulative_explained_variance_ratio = np.cumsum(explained_variance_ratio)
+    #The cumulative explained variance ratio is the cumulative sum of the explained variance ratios.
+    # It represents the total variance explained by the first n components. For example, cumulative_explained_variance_ratio[i] is the total variance explained by the first i+1 components.
 
-    return X_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std
+    # Find the smallest k such that the cumulative explained variance ratio is at least v%
+    v = np.where(cumulative_explained_variance_ratio >= float(variance))[0][0] + 1
+    
+    #Find the smallest k such that the cumulative explained variance ratio is at least variance: 
+    # This step finds the smallest number of components that explain at least a variance proportion of the total variance.
+    # The np.where function returns the indices where cumulative_explained_variance_ratio >= float(variance) is true, and [0][0] + 1 selects the first such index and adds 1 to it (because indices are 0-based).
+    selected_components = eigenvectors[:, :v]
+    
+    # projection
+    X_pca = np.dot(X_std, selected_components)
+    top_k_eigenvectors=selected_components
+    
+
+    
+
+    
+
+    return X_pca, top_k_eigenvectors, X_mean, X_std
 
 
 
@@ -55,8 +76,7 @@ def pca_inverse_transform(X_pca, top_k_eigenvectors, X_mean, X_std):
 
 
 def eigenFaces(num_components,variance,ds):
-    # Initialize explained_variance_ratio
-    
+
     if ds==1:
         lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
         n_samples, h, w = lfw_people.images.shape
@@ -73,35 +93,25 @@ def eigenFaces(num_components,variance,ds):
    
    #split the data 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
-    X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, X_train.shape[1])
+    X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, X_train.shape[1],variance)
     if num_components == 0:
         # Calculate the cumulative sum of explained variances
         explained_variances = np.cumsum(explained_variance_ratio)
 
         # Find the number of components that explain a certain percentage of the variance
         num_components = np.argmax(explained_variances >= float(variance)) + 1
-    
     # Compute PCA (eigenfaces) on the face dataset 
-    X_train_pca, explained_variance_ratio, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components)
-    #X_test_pca= pca(X_test, num_components)
-    
-    
-    # Calculate the cumulative sum of explained variances
-    explained_variances = np.cumsum(explained_variance_ratio)
-    
-    ######TODO WHAT DOES THIS DO##################################
-    # Find the number of components that explain a certain percentage of the variance
-    n_components = [np.argmax(explained_variances >= float(variance)) + 1 ]
-    ################################################################################################
+    X_train_pca, top_k_eigenvectors, X_mean, X_std = pca(X_train, num_components,variance)
+  
     
     # Select the top k eigenfaces, project the training set onto the eigenfaces, and reconstruct the images
     X_reconstructed = pca_inverse_transform(X_train_pca, top_k_eigenvectors, X_mean, X_std)
     
     
     # Select the first 10 images from the array
-    first_10_images = X_reconstructed[:25]
+    first_10_images = X_reconstructed[:16]
 
-    fig, axes = plt.subplots(5, 5, figsize=(10, 10),
+    fig, axes = plt.subplots(4, 4, figsize=(10, 10),
                             subplot_kw={'xticks':[], 'yticks':[]},
                             gridspec_kw=dict(hspace=0.1, wspace=0.1))
 
@@ -112,11 +122,17 @@ def eigenFaces(num_components,variance,ds):
 
         # Display the image
         ax.imshow(image_2D_real, cmap='gray')  # Uncommented this line
+    
+    file_path = 'G:\\university\\Senior 1\\Spring\\Image processing\\Project\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png'
+
+    # Check if the file exists
+    if os.path.exists(file_path):
+        # If the file exists, delete it
+        os.remove(file_path)
+
 
     # Save the figure as an image in the same directory
-    plt.show()
-    plt.savefig('G:\\university\\Senior 1\\Spring\\Image processing\\Project\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\projectgenerated_image.png')
-   
+    plt.savefig('G:\\university\\Senior 1\\Spring\\Image processing\\Project\\Ellipse-Detection-Using-Hough-Transform\\eigen_faces\\project\\generated_image.png')
     
    
         
