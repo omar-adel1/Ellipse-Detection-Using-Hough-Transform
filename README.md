@@ -11,11 +11,7 @@ This repository contains two projects focused on image processing: Ellipse Detec
    - **Getting Started**
      - **Prerequisites**: Python 3.7+, Streamlit, OpenCV, NumPy, PIL (Pillow)
      - **Installation**:
-       - Clone the repository:
-         ```bash
-         git clone https://github.com/yourusername/Ellipse-Detection-Using-Hough-Transform.git
-         cd Ellipse-Detection-Using-Hough-Transform
-         ```
+       - Clone the repository
        - Create a virtual environment (optional but recommended):
          ```bash
          python -m venv venv
@@ -47,11 +43,7 @@ This repository contains two projects focused on image processing: Ellipse Detec
    - **Getting Started**
      - **Prerequisites**: Python 3.7+, Flask, scikit-learn, NumPy, Matplotlib
      - **Installation**:
-       - Clone the repository:
-         ```bash
-         git clone https://github.com/yourusername/Eigen-Faces.git
-         cd Eigen-Faces
-         ```
+       - Clone the repository
        - Create a virtual environment (optional but recommended):
          ```bash
          python -m venv venv
